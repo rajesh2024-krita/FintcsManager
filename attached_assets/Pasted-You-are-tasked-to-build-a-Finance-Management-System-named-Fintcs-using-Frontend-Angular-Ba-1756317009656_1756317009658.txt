@@ -1,0 +1,179 @@
+You are tasked to build a Finance Management System named "Fintcs" using:
+- Frontend: Angular
+- Backend: ASP.Net Core Web API (C#)
+- Database: SQL Server (Database name: Fintcs, hosted on localhost)
+
+---
+
+### CORE FEATURES:
+- Roles:
+  1. Super Admin
+  2. Society Admin
+  3. User
+  4. Member
+
+- Authentication:
+  - JWT-based token authentication
+  - Super Admin seeded credentials:
+    - Username: admin
+    - Password: admin
+  - Role-based route guards & API access
+
+---
+
+### FRONTEND MODULES (Angular):
+
+#### 1. Login & Dashboard
+- Role-based dashboard navigation.
+- Super Admin: Full system overview.
+- Society Admin: Society-specific data & pending approvals.
+- User: Read-only view of society details.
+- Member: Profile, loan details & savings.
+
+---
+
+#### 2. Society Management
+- Super Admin can:
+  - Create societies, assign Society Admins.
+  - Manage Users & Members.
+- Society Admin can:
+  - View/edit society details (pending approval for final update).
+  - Manage Users & Members for their society.
+
+---
+
+#### 3. User Management
+- Fields:
+  - EDP No, Name, Address(O), Address(R), Designation, Phone(O), Phone(R), Mobile, Email, Username, Password, Confirm Password.
+
+---
+
+#### 4. Member Management
+- Fields:
+  - Mem No (Auto-generate: MEM_001, MEM_002...)
+  - Name, Father/Husband Name, Office Address, City,
+  - Phone (Office), Branch, Phone (Res.), Mobile, Designation,
+  - Residence Address, DOB, DOJ Society, Email, DOJ (Org), DOR,
+  - Nominee, Nominee Relation, Opening Balance (Share),
+  - Dropdown: Cr / Dr / CD,
+  - Bank Details: Bank Name, Payable At, Account No.,
+  - Status: Active / Deactive, Date,
+  - Deductions: Multiple selection (Share, Withdrawal, G Loan Instalment, E Loan Instalment),
+  - Photo Upload, Signature Upload.
+
+---
+
+#### 5. Loan Entry Form
+- Fields:
+  - Loan Type (Dropdown: General, Personal, Housing, Vehicle, Education, Others)
+  - Loan No. (Auto-generated + Search)
+  - Loan Date (Date Picker – default current date)
+  - EDP No. (Text + Search)
+  - Name (Text)
+  - Loan Amount, Previous Loan, Net Loan (Auto-calc: Loan Amount – Previous Loan)
+  - No. of Installments, Installment Amount
+  - Purpose (Multiline Text)
+  - Authorized By (Text)
+  - Payment Mode (Radio: Cash, Cheque, Opening)
+  - Bank (Dropdown)
+  - Cheque No., Cheque Date
+  - Share, CD, Last Salary, MWF, Pay Amount (Numeric)
+  - Given Section Table: MemNo, Name
+  - Taken Section Table: MemNo, Name
+- Buttons:
+  - Validate, Save, Close, Clear
+- Requirements:
+  - Auto-calculation of Net Loan
+  - Data validation for numeric/date fields
+  - Save button enabled only after validation
+  - Dropdowns dynamically loaded from backend
+
+---
+
+#### 6. Monthly Demand Processing Form
+- Fields:
+  - Month (Dropdown: JAN-DEC)
+  - Year (Dropdown: 2000-2050)
+  - New Button – Creates new monthly record
+- Tabs:
+  - Demand Tab/Table Columns:
+    - EDP No, Member Name, Loan Amt, CD, Loan, Interest, E-Loan, Interest..., Net..., IntDue, PInt, P Ded, LAS, Int, LASIntDue
+  - Below Table Fields:
+    - Total No. of Members (Auto)
+    - Total Amount (Auto)
+- Member Section:
+  - EDP No, Name, Loan, Emrg. Loan, Int due, LAS Int due, CD, Intrest, P. Int, P. ded, LAS, Total Amount
+- Buttons:
+  - Excel, Print, Print Loan, Save, Clear, Reset, Close
+- Requirements:
+  - Auto-calculation of totals
+  - Editable table with numeric validations
+
+---
+
+#### 7. Voucher Creation Form
+- Fields:
+  - Voucher Type (Dropdown: Payment, Receipt, Journal, Contra, Adjustment, Others)
+  - Voucher No. (Auto-generated + Search)
+  - Date (Date Picker)
+- Table Section:
+  - Columns: Particulars (Text/Dropdown), Debit (Numeric), Credit (Numeric)
+- Entry Section:
+  - Db/Cr (Dropdown – Debit, Credit)
+  - Particulars (Text/Dropdown)
+  - Ibldbc (Numeric – default 0)
+  - Add & Clear buttons
+- Total Section:
+  - Total Debit & Total Credit (Auto)
+- Other Fields:
+  - Ch. No., Cheque Date, Narration (Multiline), Remarks (Multiline), Pass Date
+- Buttons:
+  - Reverse, Save, Print, Delete, New, Close
+- Requirements:
+  - Debit & Credit must balance before saving
+  - Dropdowns configurable via backend
+  - Totals update dynamically
+
+---
+
+#### 8. Loan Report Screen
+- Main Table Columns:
+  - EDP No, Name, Amount, Loan Date, Principal, Interest, Penal, Total (Auto), Dt Last Pay
+- Right-Side Action Buttons:
+  - Defaulter's List
+  - Excess Loan Over Limit
+  - Excess Recovered G.Loan & E.Loan
+  - Print
+  - Close
+- Requirements:
+  - Sorting & Filtering on all columns
+  - Auto-calculation of Total (Principal + Interest + Penal)
+  - Default view shows all loans
+  - Optional: Export to Excel/PDF
+
+---
+
+### BACKEND (ASP.Net Core Web API):
+- JWT Authentication
+- Role-based API access
+- CRUD APIs for:
+  - Societies, Users, Members, Loans, MonthlyDemand, Vouchers
+- Auto-ID generation logic
+- APIs for dropdown values (Loan Types, Banks, Voucher Types)
+- Export/Print support for Monthly Demand, Voucher & Loan Reports
+
+---
+
+### DATABASE (SQL Server):
+- Tables:
+  - SuperAdmins, Societies, SocietyAdmins, Users, Members, Loans, MonthlyDemand, Vouchers, PendingEdits
+- Seed Data:
+  - Super Admin: admin/admin
+  - Loan Types, Voucher Types, Bank Names
+
+---
+
+### DELIVERABLES:
+1. Angular Frontend Project with all modules.
+2. ASP.Net Core Web API with authentication & CRUD.
+3. SQL Server Script (Tables + Seed Data).
