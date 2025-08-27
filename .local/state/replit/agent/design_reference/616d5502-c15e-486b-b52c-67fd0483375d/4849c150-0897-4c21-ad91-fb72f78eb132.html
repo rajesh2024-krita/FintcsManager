@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fintcs - Finance Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    popover: {
+                        DEFAULT: "var(--popover)",
+                        foreground: "var(--popover-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                    chart: {
+                        "1": "var(--chart-1)",
+                        "2": "var(--chart-2)",
+                        "3": "var(--chart-3)",
+                        "4": "var(--chart-4)",
+                        "5": "var(--chart-5)",
+                    }
+                },
+                fontFamily: {
+                    sans: ["var(--font-sans)"],
+                    serif: ["var(--font-serif)"],
+                    mono: ["var(--font-mono)"],
+                }
+            },
+        }
+    };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --background: hsl(210 40% 98%);
+            --foreground: hsl(222.2 84% 4.9%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(222.2 84% 4.9%);
+            --popover: hsl(0 0% 100%);
+            --popover-foreground: hsl(222.2 84% 4.9%);
+            --primary: hsl(211 100% 43%);
+            --primary-foreground: hsl(210 40% 98%);
+            --secondary: hsl(215 16% 47%);
+            --secondary-foreground: hsl(222.2 84% 4.9%);
+            --muted: hsl(210 40% 96%);
+            --muted-foreground: hsl(215.4 16.3% 46.9%);
+            --accent: hsl(142 71% 45%);
+            --accent-foreground: hsl(210 40% 98%);
+            --destructive: hsl(0 84% 60%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(214.3 31.8% 91.4%);
+            --input: hsl(214.3 31.8% 91.4%);
+            --ring: hsl(211 100% 43%);
+            --radius: 8px;
+            --font-sans: 'Inter', system-ui, sans-serif;
+            --font-serif: ui-serif, Georgia, serif;
+            --font-mono: ui-monospace, SFMono-Regular, monospace;
+        }
+        
+        body {
+            font-family: var(--font-sans);
+        }
+        
+        .sidebar-nav {
+            background: linear-gradient(180deg, hsl(211 100% 43%) 0%, hsl(211 100% 38%) 100%);
+        }
+        
+        .financial-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        }
+        
+        .data-table {
+            background: var(--card);
+            border: 1px solid var(--border);
+        }
+        
+        .form-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+    </style>
+</head>
+<body class="bg-background text-foreground min-h-screen">
+    <!-- @COMPONENT: AppContainer -->
+    <div class="flex h-screen bg-background">
+        
+        <!-- @COMPONENT: Sidebar -->
+        <aside class="w-64 sidebar-nav text-primary-foreground flex-shrink-0 hidden lg:block">
+            <!-- @COMPONENT: SidebarHeader -->
+            <div class="p-6 border-b border-primary/20">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chart-line text-primary-foreground text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">Fintcs</h1>
+                        <p class="text-primary-foreground/70 text-sm">Finance Management</p>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: SidebarHeader -->
+            
+            <!-- @COMPONENT: Navigation -->
+            <nav class="p-4 space-y-2">
+                <!-- @STATE: currentRole:string = 'super_admin' -->
+                <div class="mb-4">
+                    <div class="px-3 py-2 text-primary-foreground/70 text-xs font-semibold uppercase tracking-wide">
+                        Super Admin
+                    </div>
+                </div>
+                
+                <a href="#dashboard" class="flex items-center px-3 py-2 rounded-md bg-primary-foreground/10 text-primary-foreground">
+                    <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i>
+                    Dashboard
+                </a>
+                
+                <a href="#societies" class="flex items-center px-3 py-2 rounded-md hover:bg-primary-foreground/10 text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                    <i class="fas fa-building w-5 h-5 mr-3"></i>
+                    Society Management
+                </a>
+                
+                <a href="#users" class="flex items-center px-3 py-2 rounded-md hover:bg-primary-foreground/10 text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                    <i class="fas fa-users w-5 h-5 mr-3"></i>
+                    User Management
+                </a>
+                
+                <a href="#members" class="flex items-center px-3 py-2 rounded-md hover:bg-primary-foreground/10 text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                    <i class="fas fa-user-friends w-5 h-5 mr-3"></i>
+                    Member Management
+                </a>
+                
+                <a href="#loans" class="flex items-center px-3 py-2 rounded-md hover:bg-primary-foreground/10 text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                    <i class="fas fa-hand-holding-usd w-5 h-5 mr-3"></i>
+                    Loan Management
+                </a>
+                
+                <a href="#demand" class="flex items-center px-3 py-2 rounded-md hover:bg-primary-foreground/10 text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                    <i class="fas fa-calculator w-5 h-5 mr-3"></i>
+                    Monthly Demand
+                </a>
+                
+                <a href="#vouchers" class="flex items-center px-3 py-2 rounded-md hover:bg-primary-foreground/10 text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                    <i class="fas fa-receipt w-5 h-5 mr-3"></i>
+                    Voucher Management
+                </a>
+                
+                <a href="#reports" class="flex items-center px-3 py-2 rounded-md hover:bg-primary-foreground/10 text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                    <i class="fas fa-chart-bar w-5 h-5 mr-3"></i>
+                    Reports
+                </a>
+            </nav>
+            <!-- @END_COMPONENT: Navigation -->
+            
+            <!-- @COMPONENT: UserInfo -->
+            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-primary/20">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-primary-foreground/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-primary-foreground text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-primary-foreground truncate" data-bind="user.name">Admin User</p>
+                        <p class="text-xs text-primary-foreground/70 truncate" data-bind="user.role">Super Administrator</p>
+                    </div>
+                    <button class="text-primary-foreground/70 hover:text-primary-foreground" data-event="click:handleLogout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: UserInfo -->
+        </aside>
+        <!-- @END_COMPONENT: Sidebar -->
+        
+        <!-- @COMPONENT: MainContent -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            
+            <!-- @COMPONENT: Header -->
+            <header class="bg-card border-b border-border px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button class="lg:hidden text-secondary" data-event="click:toggleSidebar">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-xl font-semibold text-foreground">Dashboard</h2>
+                        <p class="text-sm text-muted-foreground">Welcome back, manage your finance operations</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="relative p-2 text-secondary hover:text-foreground" data-event="click:showNotifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground text-xs rounded-full flex items-center justify-center">3</span>
+                    </button>
+                    
+                    <div class="h-8 w-px bg-border"></div>
+                    
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-muted-foreground">Current Time:</span>
+                        <span class="text-sm font-mono text-foreground" data-bind="currentTime">2024-01-15 14:30:25</span>
+                    </div>
+                </div>
+            </header>
+            <!-- @END_COMPONENT: Header -->
+            
+            <!-- @COMPONENT: DashboardContent -->
+            <div class="flex-1 overflow-auto p-6 space-y-6">
+                
+                <!-- @COMPONENT: StatsCards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="financial-card p-6 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-muted-foreground">Total Societies</p>
+                                <p class="text-2xl font-bold text-foreground" data-bind="stats.totalSocieties">24</p>
+                            </div>
+                            <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-building text-primary text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center mt-4 text-sm">
+                            <span class="text-accent">↗ 12%</span>
+                            <span class="text-muted-foreground ml-2">from last month</span>
+                        </div>
+                    </div>
+                    
+                    <div class="financial-card p-6 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-muted-foreground">Active Members</p>
+                                <p class="text-2xl font-bold text-foreground" data-bind="stats.activeMembers">1,543</p>
+                            </div>
+                            <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-user-friends text-accent text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center mt-4 text-sm">
+                            <span class="text-accent">↗ 8%</span>
+                            <span class="text-muted-foreground ml-2">from last month</span>
+                        </div>
+                    </div>
+                    
+                    <div class="financial-card p-6 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-muted-foreground">Total Loans</p>
+                                <p class="text-2xl font-bold text-foreground" data-bind="stats.totalLoans">₹45.2M</p>
+                            </div>
+                            <div class="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-hand-holding-usd text-secondary text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center mt-4 text-sm">
+                            <span class="text-destructive">↘ 3%</span>
+                            <span class="text-muted-foreground ml-2">from last month</span>
+                        </div>
+                    </div>
+                    
+                    <div class="financial-card p-6 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-muted-foreground">Pending Approvals</p>
+                                <p class="text-2xl font-bold text-foreground" data-bind="stats.pendingApprovals">7</p>
+                            </div>
+                            <div class="w-12 h-12 bg-destructive/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-clock text-destructive text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center mt-4 text-sm">
+                            <span class="text-muted-foreground">Requires attention</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: StatsCards -->
+                
+                <!-- @COMPONENT: QuickActions -->
+                <div class="financial-card p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold text-foreground mb-4">Quick Actions</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button class="flex flex-col items-center p-4 bg-muted hover:bg-muted/80 rounded-lg transition-colors" data-event="click:createSociety">
+                            <i class="fas fa-plus-circle text-primary text-2xl mb-2"></i>
+                            <span class="text-sm font-medium text-foreground">New Society</span>
+                        </button>
+                        
+                        <button class="flex flex-col items-center p-4 bg-muted hover:bg-muted/80 rounded-lg transition-colors" data-event="click:addMember">
+                            <i class="fas fa-user-plus text-accent text-2xl mb-2"></i>
+                            <span class="text-sm font-medium text-foreground">Add Member</span>
+                        </button>
+                        
+                        <button class="flex flex-col items-center p-4 bg-muted hover:bg-muted/80 rounded-lg transition-colors" data-event="click:processLoan">
+                            <i class="fas fa-money-check text-secondary text-2xl mb-2"></i>
+                            <span class="text-sm font-medium text-foreground">Process Loan</span>
+                        </button>
+                        
+                        <button class="flex flex-col items-center p-4 bg-muted hover:bg-muted/80 rounded-lg transition-colors" data-event="click:generateReports">
+                            <i class="fas fa-file-export text-muted-foreground text-2xl mb-2"></i>
+                            <span class="text-sm font-medium text-foreground">Generate Reports</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: QuickActions -->
+                
+                <!-- @COMPONENT: RecentActivity -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="financial-card p-6 rounded-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-foreground">Recent Loans</h3>
+                            <button class="text-primary hover:text-primary/80 text-sm font-medium" data-event="click:viewAllLoans">
+                                View All
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <!-- @MAP: recentLoans.map(loan => ( -->
+                            <div class="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-mock="true">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-hand-holding-usd text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-foreground">John Smith</p>
+                                        <p class="text-sm text-muted-foreground">EDP001 • General Loan</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-semibold text-foreground">₹2,50,000</p>
+                                    <p class="text-sm text-muted-foreground">Today</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-mock="true">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-home text-accent"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-foreground">Sarah Johnson</p>
+                                        <p class="text-sm text-muted-foreground">EDP002 • Housing Loan</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-semibold text-foreground">₹15,00,000</p>
+                                    <p class="text-sm text-muted-foreground">Yesterday</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-mock="true">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-secondary/10 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-graduation-cap text-secondary"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-foreground">Mike Davis</p>
+                                        <p class="text-sm text-muted-foreground">EDP003 • Education Loan</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-semibold text-foreground">₹5,00,000</p>
+                                    <p class="text-sm text-muted-foreground">2 days ago</p>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+                    
+                    <div class="financial-card p-6 rounded-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-foreground">Pending Approvals</h3>
+                            <button class="text-primary hover:text-primary/80 text-sm font-medium" data-event="click:viewAllPending">
+                                View All
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <!-- @MAP: pendingApprovals.map(approval => ( -->
+                            <div class="flex items-center justify-between p-3 bg-destructive/5 border border-destructive/20 rounded-lg" data-mock="true">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-destructive/10 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-exclamation-triangle text-destructive"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-foreground">Society Edit Request</p>
+                                        <p class="text-sm text-muted-foreground">ABC Cooperative Society</p>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="px-3 py-1 bg-accent text-accent-foreground text-xs font-medium rounded-md hover:bg-accent/90" data-event="click:approveRequest">
+                                        Approve
+                                    </button>
+                                    <button class="px-3 py-1 bg-destructive text-destructive-foreground text-xs font-medium rounded-md hover:bg-destructive/90" data-event="click:rejectRequest">
+                                        Reject
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-destructive/5 border border-destructive/20 rounded-lg" data-mock="true">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-destructive/10 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user-plus text-destructive"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-foreground">New Member Registration</p>
+                                        <p class="text-sm text-muted-foreground">Robert Wilson - EDP004</p>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="px-3 py-1 bg-accent text-accent-foreground text-xs font-medium rounded-md hover:bg-accent/90" data-event="click:approveRequest">
+                                        Approve
+                                    </button>
+                                    <button class="px-3 py-1 bg-destructive text-destructive-foreground text-xs font-medium rounded-md hover:bg-destructive/90" data-event="click:rejectRequest">
+                                        Reject
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: RecentActivity -->
+                
+                <!-- @COMPONENT: LoanEntryForm -->
+                <div class="financial-card p-6 rounded-lg">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-foreground">Loan Entry Form</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 bg-muted text-muted-foreground rounded-md hover:bg-muted/80" data-event="click:clearForm">
+                                Clear
+                            </button>
+                            <button class="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90" data-event="click:validateForm">
+                                Validate
+                            </button>
+                            <button class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90" data-event="click:saveLoan">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">Loan Type</label>
+                                <select class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" data-bind="loanForm.type">
+                                    <option>Select Loan Type</option>
+                                    <option>General</option>
+                                    <option>Personal</option>
+                                    <option>Housing</option>
+                                    <option>Vehicle</option>
+                                    <option>Education</option>
+                                    <option>Others</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">Loan No.</label>
+                                <div class="flex space-x-2">
+                                    <input type="text" class="flex-1 px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" placeholder="Auto-generated" data-bind="loanForm.loanNo" readonly />
+                                    <button class="px-3 py-2 bg-muted text-muted-foreground rounded-md hover:bg-muted/80" data-event="click:searchLoan">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">Loan Date</label>
+                                <input type="date" class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" data-bind="loanForm.date" />
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">EDP No.</label>
+                                <div class="flex space-x-2">
+                                    <input type="text" class="flex-1 px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" placeholder="Enter EDP No." data-bind="loanForm.edpNo" />
+                                    <button class="px-3 py-2 bg-muted text-muted-foreground rounded-md hover:bg-muted/80" data-event="click:searchEDP">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">Name</label>
+                                <input type="text" class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" placeholder="Member Name" data-bind="loanForm.name" />
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">Loan Amount</label>
+                                <input type="number" class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" placeholder="0.00" data-bind="loanForm.amount" />
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">Previous Loan</label>
+                                <input type="number" class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" placeholder="0.00" data-bind="loanForm.previousLoan" />
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">Net Loan</label>
+                                <input type="number" class="w-full px-3 py-2 border border-input bg-muted rounded-md" placeholder="Auto-calculated" data-bind="loanForm.netLoan" readonly />
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">No. of Installments</label>
+                                <input type="number" class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" placeholder="12" data-bind="loanForm.installments" />
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">Installment Amount</label>
+                                <input type="number" class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" placeholder="0.00" data-bind="loanForm.installmentAmount" />
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">Payment Mode</label>
+                                <div class="flex space-x-4">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="paymentMode" value="cash" class="mr-2" data-bind="loanForm.paymentMode" />
+                                        <span class="text-sm text-foreground">Cash</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="paymentMode" value="cheque" class="mr-2" data-bind="loanForm.paymentMode" />
+                                        <span class="text-sm text-foreground">Cheque</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="paymentMode" value="opening" class="mr-2" data-bind="loanForm.paymentMode" />
+                                        <span class="text-sm text-foreground">Opening</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">Purpose</label>
+                                <textarea class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" rows="3" placeholder="Purpose of loan..." data-bind="loanForm.purpose"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="form-section p-4">
+                            <h4 class="font-semibold text-foreground mb-3">Given Section</h4>
+                            <div class="data-table rounded-md overflow-hidden">
+                                <table class="w-full">
+                                    <thead class="bg-muted">
+                                        <tr>
+                                            <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground">Mem No</th>
+                                            <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground">Name</th>
+                                            <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- @MAP: givenSection.map(member => ( -->
+                                        <tr class="border-t border-border" data-mock="true">
+                                            <td class="px-4 py-2 text-sm text-foreground">MEM_001</td>
+                                            <td class="px-4 py-2 text-sm text-foreground">John Smith</td>
+                                            <td class="px-4 py-2">
+                                                <button class="text-destructive hover:text-destructive/80" data-event="click:removeFromGiven">
+                                                    <i class="fas fa-trash text-sm"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <!-- @END_MAP )) -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section p-4">
+                            <h4 class="font-semibold text-foreground mb-3">Taken Section</h4>
+                            <div class="data-table rounded-md overflow-hidden">
+                                <table class="w-full">
+                                    <thead class="bg-muted">
+                                        <tr>
+                                            <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground">Mem No</th>
+                                            <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground">Name</th>
+                                            <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- @MAP: takenSection.map(member => ( -->
+                                        <tr class="border-t border-border" data-mock="true">
+                                            <td class="px-4 py-2 text-sm text-foreground">MEM_002</td>
+                                            <td class="px-4 py-2 text-sm text-foreground">Sarah Johnson</td>
+                                            <td class="px-4 py-2">
+                                                <button class="text-destructive hover:text-destructive/80" data-event="click:removeFromTaken">
+                                                    <i class="fas fa-trash text-sm"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <!-- @END_MAP )) -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: LoanEntryForm -->
+                
+                <!-- @COMPONENT: MonthlyDemandProcessing -->
+                <div class="financial-card p-6 rounded-lg">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-foreground">Monthly Demand Processing</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 bg-accent text-accent-foreground rounded-md hover:bg-accent/90" data-event="click:createNewDemand">
+                                <i class="fas fa-plus mr-2"></i>
+                                New
+                            </button>
+                            <button class="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90" data-event="click:exportExcel">
+                                <i class="fas fa-file-excel mr-2"></i>
+                                Excel
+                            </button>
+                            <button class="px-4 py-2 bg-muted text-muted-foreground rounded-md hover:bg-muted/80" data-event="click:printDemand">
+                                <i class="fas fa-print mr-2"></i>
+                                Print
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-foreground mb-2">Month</label>
+                            <select class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" data-bind="demandForm.month">
+                                <option>January</option>
+                                <option>February</option>
+                                <option>March</option>
+                                <option>April</option>
+                                <option>May</option>
+                                <option>June</option>
+                                <option>July</option>
+                                <option>August</option>
+                                <option>September</option>
+                                <option>October</option>
+                                <option>November</option>
+                                <option>December</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-foreground mb-2">Year</label>
+                            <select class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" data-bind="demandForm.year">
+                                <option>2024</option>
+                                <option>2023</option>
+                                <option>2022</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="data-table rounded-md overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-muted">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">EDP No</th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Member Name</th>
+                                        <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Loan Amt</th>
+                                        <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground">CD</th>
+                                        <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Loan</th>
+                                        <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Interest</th>
+                                        <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground">E-Loan</th>
+                                        <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground">E-Interest</th>
+                                        <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Net</th>
+                                        <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- @MAP: monthlyDemand.map(demand => ( -->
+                                    <tr class="border-t border-border" data-mock="true">
+                                        <td class="px-4 py-3 text-sm font-mono text-foreground">EDP001</td>
+                                        <td class="px-4 py-3 text-sm text-foreground">John Smith</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹2,50,000</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹5,000</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹15,000</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹2,500</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹0</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹0</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹22,500</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right font-semibold text-foreground">₹22,500</td>
+                                    </tr>
+                                    
+                                    <tr class="border-t border-border" data-mock="true">
+                                        <td class="px-4 py-3 text-sm font-mono text-foreground">EDP002</td>
+                                        <td class="px-4 py-3 text-sm text-foreground">Sarah Johnson</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹15,00,000</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹8,000</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹45,000</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹12,500</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹10,000</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹850</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹76,350</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right font-semibold text-foreground">₹76,350</td>
+                                    </tr>
+                                    <!-- @END_MAP )) -->
+                                </tbody>
+                                <tfoot class="bg-muted/50">
+                                    <tr>
+                                        <td colspan="8" class="px-4 py-3 text-sm font-semibold text-foreground">Total (2 Members)</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right font-semibold text-foreground">₹98,850</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right font-bold text-foreground">₹98,850</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: MonthlyDemandProcessing -->
+                
+                <!-- @COMPONENT: VoucherCreation -->
+                <div class="financial-card p-6 rounded-lg">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-foreground">Voucher Creation</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 bg-accent text-accent-foreground rounded-md hover:bg-accent/90" data-event="click:newVoucher">
+                                New
+                            </button>
+                            <button class="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90" data-event="click:printVoucher">
+                                Print
+                            </button>
+                            <button class="px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90" data-event="click:deleteVoucher">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-foreground mb-2">Voucher Type</label>
+                            <select class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" data-bind="voucherForm.type">
+                                <option>Payment</option>
+                                <option>Receipt</option>
+                                <option>Journal</option>
+                                <option>Contra</option>
+                                <option>Adjustment</option>
+                                <option>Others</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-foreground mb-2">Voucher No.</label>
+                            <div class="flex space-x-2">
+                                <input type="text" class="flex-1 px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" placeholder="Auto-generated" data-bind="voucherForm.voucherNo" readonly />
+                                <button class="px-3 py-2 bg-muted text-muted-foreground rounded-md hover:bg-muted/80" data-event="click:searchVoucher">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-foreground mb-2">Date</label>
+                            <input type="date" class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" data-bind="voucherForm.date" />
+                        </div>
+                    </div>
+                    
+                    <div class="data-table rounded-md overflow-hidden mb-6">
+                        <table class="w-full">
+                            <thead class="bg-muted">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Particulars</th>
+                                    <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Debit</th>
+                                    <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Credit</th>
+                                    <th class="px-4 py-3 text-center text-sm font-medium text-muted-foreground">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- @MAP: voucherEntries.map(entry => ( -->
+                                <tr class="border-t border-border" data-mock="true">
+                                    <td class="px-4 py-3 text-sm text-foreground">Cash Account</td>
+                                    <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹50,000.00</td>
+                                    <td class="px-4 py-3 text-sm font-mono text-right text-foreground">-</td>
+                                    <td class="px-4 py-3 text-center">
+                                        <button class="text-destructive hover:text-destructive/80" data-event="click:removeEntry">
+                                            <i class="fas fa-trash text-sm"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="border-t border-border" data-mock="true">
+                                    <td class="px-4 py-3 text-sm text-foreground">Loan Account</td>
+                                    <td class="px-4 py-3 text-sm font-mono text-right text-foreground">-</td>
+                                    <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹50,000.00</td>
+                                    <td class="px-4 py-3 text-center">
+                                        <button class="text-destructive hover:text-destructive/80" data-event="click:removeEntry">
+                                            <i class="fas fa-trash text-sm"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- @END_MAP )) -->
+                            </tbody>
+                            <tfoot class="bg-muted/50">
+                                <tr>
+                                    <td class="px-4 py-3 text-sm font-semibold text-foreground">Totals</td>
+                                    <td class="px-4 py-3 text-sm font-mono text-right font-semibold text-foreground">₹50,000.00</td>
+                                    <td class="px-4 py-3 text-sm font-mono text-right font-semibold text-foreground">₹50,000.00</td>
+                                    <td class="px-4 py-3 text-center">
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-accent/10 text-accent">
+                                            <i class="fas fa-check-circle mr-1"></i>
+                                            Balanced
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Db/Cr</label>
+                                    <select class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" data-bind="entryForm.type">
+                                        <option>Debit</option>
+                                        <option>Credit</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Amount</label>
+                                    <input type="number" class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" placeholder="0.00" data-bind="entryForm.amount" />
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">Particulars</label>
+                                <input type="text" class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" placeholder="Account name" data-bind="entryForm.particulars" />
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <button class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90" data-event="click:addEntry">
+                                    Add Entry
+                                </button>
+                                <button class="px-4 py-2 bg-muted text-muted-foreground rounded-md hover:bg-muted/80" data-event="click:clearEntry">
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">Cheque No.</label>
+                                <input type="text" class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" placeholder="Cheque number" data-bind="voucherForm.chequeNo" />
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">Cheque Date</label>
+                                <input type="date" class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" data-bind="voucherForm.chequeDate" />
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-foreground mb-2">Narration</label>
+                                <textarea class="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring" rows="3" placeholder="Transaction description..." data-bind="voucherForm.narration"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: VoucherCreation -->
+                
+                <!-- @COMPONENT: LoanReports -->
+                <div class="financial-card p-6 rounded-lg">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-foreground">Loan Reports</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90" data-event="click:defaultersList">
+                                Defaulter's List
+                            </button>
+                            <button class="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90" data-event="click:excessLoanReport">
+                                Excess Loan Over Limit
+                            </button>
+                            <button class="px-4 py-2 bg-accent text-accent-foreground rounded-md hover:bg-accent/90" data-event="click:recoveredLoanReport">
+                                Excess Recovered
+                            </button>
+                            <button class="px-4 py-2 bg-muted text-muted-foreground rounded-md hover:bg-muted/80" data-event="click:printReport">
+                                <i class="fas fa-print mr-2"></i>
+                                Print
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="data-table rounded-md overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-muted">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground cursor-pointer hover:text-foreground">
+                                            EDP No
+                                            <i class="fas fa-sort ml-1"></i>
+                                        </th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground cursor-pointer hover:text-foreground">
+                                            Name
+                                            <i class="fas fa-sort ml-1"></i>
+                                        </th>
+                                        <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground cursor-pointer hover:text-foreground">
+                                            Amount
+                                            <i class="fas fa-sort ml-1"></i>
+                                        </th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground cursor-pointer hover:text-foreground">
+                                            Loan Date
+                                            <i class="fas fa-sort ml-1"></i>
+                                        </th>
+                                        <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground cursor-pointer hover:text-foreground">
+                                            Principal
+                                            <i class="fas fa-sort ml-1"></i>
+                                        </th>
+                                        <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground cursor-pointer hover:text-foreground">
+                                            Interest
+                                            <i class="fas fa-sort ml-1"></i>
+                                        </th>
+                                        <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground cursor-pointer hover:text-foreground">
+                                            Penal
+                                            <i class="fas fa-sort ml-1"></i>
+                                        </th>
+                                        <th class="px-4 py-3 text-right text-sm font-medium text-muted-foreground cursor-pointer hover:text-foreground">
+                                            Total
+                                            <i class="fas fa-sort ml-1"></i>
+                                        </th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground cursor-pointer hover:text-foreground">
+                                            Dt Last Pay
+                                            <i class="fas fa-sort ml-1"></i>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- @MAP: loanReports.map(loan => ( -->
+                                    <tr class="border-t border-border hover:bg-muted/30" data-mock="true">
+                                        <td class="px-4 py-3 text-sm font-mono text-foreground">EDP001</td>
+                                        <td class="px-4 py-3 text-sm text-foreground">John Smith</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹2,50,000</td>
+                                        <td class="px-4 py-3 text-sm text-foreground">2024-01-15</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹1,85,000</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹15,250</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹0</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right font-semibold text-foreground">₹2,00,250</td>
+                                        <td class="px-4 py-3 text-sm text-foreground">2024-01-01</td>
+                                    </tr>
+                                    
+                                    <tr class="border-t border-border hover:bg-muted/30" data-mock="true">
+                                        <td class="px-4 py-3 text-sm font-mono text-foreground">EDP002</td>
+                                        <td class="px-4 py-3 text-sm text-foreground">Sarah Johnson</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹15,00,000</td>
+                                        <td class="px-4 py-3 text-sm text-foreground">2023-12-10</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹12,50,000</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹95,500</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-destructive">₹5,000</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right font-semibold text-foreground">₹13,50,500</td>
+                                        <td class="px-4 py-3 text-sm text-foreground">2023-12-25</td>
+                                    </tr>
+                                    
+                                    <tr class="border-t border-border hover:bg-muted/30" data-mock="true">
+                                        <td class="px-4 py-3 text-sm font-mono text-foreground">EDP003</td>
+                                        <td class="px-4 py-3 text-sm text-foreground">Mike Davis</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹5,00,000</td>
+                                        <td class="px-4 py-3 text-sm text-foreground">2024-01-12</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹4,75,000</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹12,500</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right text-foreground">₹0</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right font-semibold text-foreground">₹4,87,500</td>
+                                        <td class="px-4 py-3 text-sm text-foreground">2024-01-10</td>
+                                    </tr>
+                                    <!-- @END_MAP )) -->
+                                </tbody>
+                                <tfoot class="bg-muted/50">
+                                    <tr>
+                                        <td colspan="7" class="px-4 py-3 text-sm font-semibold text-foreground">Grand Total (3 Records)</td>
+                                        <td class="px-4 py-3 text-sm font-mono text-right font-bold text-foreground">₹20,38,250</td>
+                                        <td class="px-4 py-3"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: LoanReports -->
+                
+            </div>
+            <!-- @END_COMPONENT: DashboardContent -->
+            
+        </main>
+        <!-- @END_COMPONENT: MainContent -->
+        
+    </div>
+    <!-- @END_COMPONENT: AppContainer -->
+    
+    <script>
+        // TODO: Implement React component state management and business logic
+        // TODO: Add form validation and auto-calculations
+        // TODO: Implement JWT authentication and role-based access control
+        // TODO: Add API integration for CRUD operations
+        // TODO: Implement file upload functionality for member photos and signatures
+        // TODO: Add export functionality for reports (Excel, PDF)
+        // TODO: Implement real-time calculations for loan and demand processing
+        // TODO: Add notification system for pending approvals
+        // TODO: Implement search and filtering functionality
+        // TODO: Add data persistence and state management
+        
+        (function() {
+            // Basic interactivity for demonstration
+            console.log('Fintcs Finance Management System initialized');
+            
+            // Mock time update
+            function updateTime() {
+                const now = new Date();
+                const timeElement = document.querySelector('[data-bind="currentTime"]');
+                if (timeElement) {
+                    timeElement.textContent = now.toLocaleString();
+                }
+            }
+            
+            setInterval(updateTime, 1000);
+            updateTime();
+            
+            // Mock auto-calculation for net loan
+            const loanAmountInput = document.querySelector('[data-bind="loanForm.amount"]');
+            const previousLoanInput = document.querySelector('[data-bind="loanForm.previousLoan"]');
+            const netLoanInput = document.querySelector('[data-bind="loanForm.netLoan"]');
+            
+            function calculateNetLoan() {
+                if (loanAmountInput && previousLoanInput && netLoanInput) {
+                    const loanAmount = parseFloat(loanAmountInput.value) || 0;
+                    const previousLoan = parseFloat(previousLoanInput.value) || 0;
+                    const netLoan = loanAmount - previousLoan;
+                    netLoanInput.value = netLoan.toFixed(2);
+                }
+            }
+            
+            if (loanAmountInput) {
+                loanAmountInput.addEventListener('input', calculateNetLoan);
+            }
+            if (previousLoanInput) {
+                previousLoanInput.addEventListener('input', calculateNetLoan);
+            }
+        })();
+    </script>
+</body>
+</html>
